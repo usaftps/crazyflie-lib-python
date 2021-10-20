@@ -225,6 +225,12 @@ class Param():
             if paramname not in self.param_update_callbacks:
                 self.param_update_callbacks[paramname] = Caller()
             self.param_update_callbacks[paramname].add_callback(cb)
+            #
+            # To stay compatible with legacy behavior we need to call the
+            # callback here. See for instance sbs_connect_log_param.py example.
+            #
+            cb(self.get_value(paramname))
+
 
     def refresh_toc(self, refresh_done_callback, toc_cache):
         """
