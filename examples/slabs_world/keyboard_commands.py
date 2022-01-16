@@ -19,6 +19,7 @@ logging.basicConfig(level=logging.ERROR)
 
 
 def on_release(key, scf):
+    print('got a key press')
     '''
     print('{0} released'.format(key))
     '''
@@ -48,14 +49,11 @@ def on_release(key, scf):
 
 def param_deck_flow(name, value_str):
     value = int(value_str)
-    print(value)
-    global is_deck_Attached
+    global is_deck_attached
     if value:
         is_deck_attached = True
-        print("deck attached")
     else:
         is_deck_attached = False
-        print("deck NOT attached")
 
 
 if __name__ == '__main__':
@@ -63,9 +61,10 @@ if __name__ == '__main__':
     with SyncCrazyflie(URI, cf=Crazyflie(rw_cache='./cache')) as scf:
         scf.cf.param.add_update_callback(group='deck', name='bcFlow2',
                                          cb=param_deck_flow)
-    time.sleep(2)
-
-    if is_deck_attached:
-        with keyboard.Listener(on_release=lambda event:on_release(event, scf)) as listener:
-            listener.join()
-        print('failing here')
+        time.sleep(2)
+        if is_deck_attached:
+            print('let\'s fly')
+            with keyboard.Listener(on_release=lambda event:on_release(event, scf)) as listener:
+                listener.join()
+                print('waiting...')
+            print('failing here')
