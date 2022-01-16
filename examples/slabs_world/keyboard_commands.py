@@ -46,39 +46,6 @@ def on_release(key, scf):
             mc.right(DEFAULT_TRANSLATE)
 
 
-def keyboard_test():
-    a=1
-
-def keyboard_inputs(scf):
-    print("get keyboard inputs")
-    with MotionCommander(scf, default_height=.5) as mc:
-        time.sleep(2)
-        while True:
-            key_pressed = keyboard.read_key()
-            if keyboard.is_pressed('esc'):
-                mc.stop()
-                print('All done!')
-                break
-            if key_pressed == keyboard.KEY_UP:
-                print('up arrow')
-                mc.up(DEFAULT_HEIGHT)
-            elif key_pressed == keyboard.KEY_DOWN:
-                print('down arrow')
-                mc.down(DEFAULT_HEIGHT)
-            elif key_pressed == 'w':
-                print('w key to go forward')
-                mc.forward(DEFAULT_TRANSLATE)
-            elif key_pressed == 's':
-                print('s key to go backward')
-                mc.forward(DEFAULT_TRANSLATE)
-            elif key_pressed == 'a':
-                print('a key to translate left')
-                mc.forward(DEFAULT_TRANSLATE)
-            elif key_pressed == 'd':
-                print('d key to translate right')
-                mc.forward(DEFAULT_TRANSLATE)                
-
-
 def param_deck_flow(name, value_str):
     value = int(value_str)
     print(value)
