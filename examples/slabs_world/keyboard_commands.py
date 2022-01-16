@@ -1,4 +1,4 @@
-import curses
+import keyboard
 import logging
 import time
 import cflib.crtp
@@ -10,40 +10,43 @@ from cflib.positioning.position_hl_commander import PositionHlCommander
 from cflib.utils import uri_helper
 
 URI = uri_helper.uri_from_env(default='radio://0/80/2M/E7E7E7E7E7')
-DEFAULT_HEIGHT = 0.1
+DEFAULT_HEIGHT = 0.05
+DEFAULT_TRANSLATE = 0.05
 is_deck_attached = False
 position_estimate = [0, 0]
 
 logging.basicConfig(level=logging.ERROR)
 
 
-def keyboard_inputs(stdscr):
-    stdscr.addstr('Hello world')
-    # do not wait for input when calling getch
-    stdscr.nodelay(1)
-    while True:
-        # get keyboard input, returns -1 if none available
-        c = stdscr.getch()
-        if c != -1:
-            if c == 27:
+def keyboard_inputs(scf):
+    print("get keyboard inputs")
+    with MotionCommander(scf, default_height=.5) as mc:
+        time.sleep(2)
+        while True:
+            key_pressed = keyboard.read_key()
+            if keyboard.is_pressed('esc'):
+                mc.stop()
+                print('All done!')
                 break
-            elif c == 259:
-                stdscr.addstr('up arrow')
-            elif c == 258:
-                stdscr.addstr('down arrow')
-            elif c == 119:
-                stdscr.addstr('w key to go forward')
-            elif c == 115:
-                stdscr.addstr('s key to go backward')
-            elif c == 97:
-                stdscr.addstr('a key to translate left')
-            elif c == 100:
-                stdscr.addstr('d key to translate right')
-            # print numeric value
-            stdscr.addstr(str(c) + ' ')
-            stdscr.refresh()
-            # return curser to start position
-            stdscr.move(0, 0)
+            if key_pressed == keyboard.KEY_UP:
+                print('up arrow')
+                mc.up(DEFAULT_HEIGHT)
+            elif key_pressed == keyboard.KEY_DOWN:
+                print('down arrow')
+                mc.down(DEFAULT_HEIGHT)
+            elif key_pressed == 'w':
+                print('w key to go forward')
+                mc.forward(DEFAULT_TRANSLATE)
+            elif key_pressed == 's':
+                print('s key to go backward')
+                mc.forward(DEFAULT_TRANSLATE)
+            elif key_pressed == 'a':
+                print('a key to translate left')
+                mc.forward(DEFAULT_TRANSLATE)
+            elif key_pressed == 'd':
+                print('d key to translate right')
+                mc.forward(DEFAULT_TRANSLATE)                
+
 
 def param_deck_flow(name, value_str):
     value = int(value_str)
@@ -58,15 +61,13 @@ def param_deck_flow(name, value_str):
 
 
 if __name__ == '__main__':
-    #curses.wrapper(keyboard_inputs, scf)
     cflib.crtp.init_drivers()
-    '''
     with SyncCrazyflie(URI, cf=Crazyflie(rw_cache='./cache')) as scf:
         scf.cf.param.add_update_callback(group='deck', name='bcFlow2',
                                          cb=param_deck_flow)
-    '''
-    time.sleep(1)
-    if not is_deck_attached:
-        curses.wrapper(keyboard_inputs)
-    print("and out")
+    time.sleep(2)
+    if is_deck_attached:
+        print("do I get here?")
+        keyboard_inputs(scf)
 
+    print('failing here')
