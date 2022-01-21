@@ -18,7 +18,7 @@ position_estimate = [0, 0]
 logging.basicConfig(level=logging.ERROR)
 
 
-def on_release(key, mc):
+def on_press(key, mc):
     if key == keyboard.Key.esc:
         # Stop listener
         print('all done')
@@ -33,7 +33,7 @@ def on_release(key, mc):
         mc.back(DEFAULT_TRANSLATE)
     elif key == keyboard.KeyCode.from_char('a'):
         mc.left(DEFAULT_TRANSLATE)
-    elif key ==keyboard.KeyCode.from_char('d'):
+    elif key == keyboard.KeyCode.from_char('d'):
         mc.right(DEFAULT_TRANSLATE)
 
 
@@ -55,7 +55,6 @@ if __name__ == '__main__':
         if is_deck_attached:
             print('let\'s fly')
             with MotionCommander(scf, default_height=0.5) as mc:
-                with keyboard.Listener(on_release=lambda event:on_release(event, mc)) as listener:
+                with keyboard.Listener(on_press=lambda event:on_press(event, mc)) as listener:
                     listener.join()
-                    print('waiting...')
-            print('failing here')
+            print('Thanks for flying!')
