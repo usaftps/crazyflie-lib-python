@@ -25,3 +25,4 @@ docs/api/cflib
 
 #vscode config folder
 .vscode/
+*~
