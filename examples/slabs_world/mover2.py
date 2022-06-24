@@ -34,9 +34,9 @@ from cflib.positioning.motion_commander import MotionCommander
 from cflib.positioning.position_hl_commander import PositionHlCommander
 from cflib.utils import uri_helper
 
-URI = uri_helper.uri_from_env(default='radio://0/80/2M/E7E7E7E701')
+URI = uri_helper.uri_from_env(default='radio://0/80/2M/E7E7E7E7E6')
 
-DEFAULT_HEIGHT = 0.5
+DEFAULT_HEIGHT = .5
 BOX_LIMIT = 0.5
 
 is_deck_attached = False
@@ -49,7 +49,7 @@ def move_box_limit(scf):
     with MotionCommander(scf, default_height=DEFAULT_HEIGHT) as mc:
         body_x_cmd = 0.2
         body_y_cmd = 0.1
-        max_vel = 0.3
+        max_vel = 0.2
 
         while (1):
             '''if position_estimate[0] > BOX_LIMIT:
@@ -145,18 +145,17 @@ if __name__ == '__main__':
                                          cb=param_deck_flow)
         time.sleep(1)
 
-        logconf = LogConfig(name='Position', period_in_ms=200)
+        logconf = LogConfig(name='Position', period_in_ms=50)
         logconf.add_variable('stateEstimate.x', 'float')
         logconf.add_variable('stateEstimate.y', 'float')
-        logconf.add_variable('stateEstimate.z', 'float')        
         scf.cf.log.add_config(logconf)
         logconf.data_received_cb.add_callback(log_pos_callback)
 
         if is_deck_attached:
             logconf.start()
-            print('takeoff')
+
             take_off_simple(scf)
-            # move_linear_simple(scf)
+            move_linear_simple(scf)
             # move_box_limit(scf)
 
             #slab_motion(scf)
